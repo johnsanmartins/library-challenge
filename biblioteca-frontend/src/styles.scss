@@ -1,13 +1,30 @@
 @use '@angular/material' as mat;
 
+:root {
+  --page-bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --primary: #3949ab;
+  --primary-dark: #1a237e;
+  --border: rgba(0, 0, 0, 0.07);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --radius: 12px;
+}
+
 html, body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Inter', 'Roboto', 'Helvetica Neue', sans-serif;
+  background-color: var(--page-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+// ── Page layout ────────────────────────────────────────────────
 .page-container {
-  padding: 24px;
+  padding: 32px 36px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -16,62 +33,156 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 
   h1 {
     margin: 0;
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.4px;
   }
 }
 
 .search-bar {
-  width: 300px;
-  margin-bottom: 16px;
+  width: 320px;
+  margin-bottom: 20px;
 }
 
+// ── Table card ─────────────────────────────────────────────────
 .table-container {
-  overflow-x: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+
+  table {
+    width: 100%;
+  }
 }
 
-table {
-  width: 100%;
+// Material table overrides
+.mat-mdc-header-row {
+  background-color: #f9fafb !important;
+}
+
+.mat-mdc-header-cell {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.12s ease;
+
+  &:hover {
+    background-color: #f9fafb !important;
+  }
+}
+
+.mat-mdc-cell {
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.mat-mdc-row:last-child .mat-mdc-cell {
+  border-bottom: none !important;
 }
 
 .mat-column-actions {
-  width: 120px;
+  width: 110px;
   text-align: center;
 }
 
+// ── Paginator ──────────────────────────────────────────────────
+.mat-mdc-paginator {
+  border-top: 1px solid var(--border) !important;
+  background-color: #f9fafb !important;
+  color: var(--text-secondary) !important;
+  font-size: 13px !important;
+}
+
+// ── Status chips ───────────────────────────────────────────────
 .chip-active {
-  background-color: #e8f5e9 !important;
-  color: #2e7d32 !important;
+  background-color: #dcfce7 !important;
+  color: #166534 !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.2px !important;
 }
 
 .chip-returned {
-  background-color: #e3f2fd !important;
-  color: #1565c0 !important;
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.2px !important;
 }
 
 .chip-overdue {
-  background-color: #ffebee !important;
-  color: #c62828 !important;
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.2px !important;
 }
 
+// Category chip in book list
+.mat-mdc-chip {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  height: 22px !important;
+}
+
+// ── Empty state ────────────────────────────────────────────────
 .no-data-row {
   text-align: center;
-  padding: 40px;
-  color: rgba(0,0,0,0.5);
+  padding: 72px 40px;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
+// ── Snackbars ──────────────────────────────────────────────────
 .error-snack {
-  background-color: #f44336;
-  color: white;
+  --mdc-snackbar-container-color: #dc2626;
+  --mdc-snackbar-supporting-text-color: white;
 }
 
 .success-snack {
-  background-color: #4caf50;
-  color: white;
+  --mdc-snackbar-container-color: #16a34a;
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+// ── Buttons ────────────────────────────────────────────────────
+.mat-mdc-raised-button {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.mat-mdc-icon-button {
+  border-radius: 8px !important;
+}
+
+// ── Form fields ────────────────────────────────────────────────
+.mat-mdc-form-field {
+  font-family: 'Inter', sans-serif !important;
+}
+
+// ── Spinner ────────────────────────────────────────────────────
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 40px;
 }

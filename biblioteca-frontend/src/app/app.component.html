@@ -1,51 +1,62 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav mode="side" opened class="sidenav">
-    <mat-toolbar color="primary" class="sidenav-header">
-      <mat-icon>menu_book</mat-icon>
-      <span class="sidenav-title">Biblioteca</span>
-    </mat-toolbar>
 
-    <mat-nav-list>
-      <a mat-list-item routerLink="/books" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>book</mat-icon>
-        <span matListItemTitle>Libros</span>
+    <div class="sidenav-brand">
+      <div class="brand-icon">
+        <mat-icon>menu_book</mat-icon>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Biblioteca</span>
+        <span class="brand-subtitle">Sistema de Gestión</span>
+      </div>
+    </div>
+
+    <nav class="sidenav-nav">
+      <p class="nav-section-label">MÓDULOS</p>
+      <a routerLink="/books" routerLinkActive="active-link" class="nav-item">
+        <mat-icon class="nav-icon">book</mat-icon>
+        <span class="nav-label">Libros</span>
       </a>
-      <a mat-list-item routerLink="/authors" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>person</mat-icon>
-        <span matListItemTitle>Autores</span>
+      <a routerLink="/authors" routerLinkActive="active-link" class="nav-item">
+        <mat-icon class="nav-icon">person</mat-icon>
+        <span class="nav-label">Autores</span>
       </a>
-      <a mat-list-item routerLink="/clients" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Clientes</span>
+      <a routerLink="/clients" routerLinkActive="active-link" class="nav-item">
+        <mat-icon class="nav-icon">people</mat-icon>
+        <span class="nav-label">Clientes</span>
       </a>
-      <a mat-list-item routerLink="/loans" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>swap_horiz</mat-icon>
-        <span matListItemTitle>Préstamos</span>
+      <a routerLink="/loans" routerLinkActive="active-link" class="nav-item">
+        <mat-icon class="nav-icon">swap_horiz</mat-icon>
+        <span class="nav-label">Préstamos</span>
       </a>
-    </mat-nav-list>
+    </nav>
 
     <div class="sidenav-footer">
       <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtn">
-        <div class="user-info" *ngIf="authService.userProfile$ | async as profile">
-          <mat-icon>account_circle</mat-icon>
-          <span>{{ profile['name'] || profile['preferred_username'] }}</span>
+        <div class="user-card" *ngIf="authService.userProfile$ | async as profile">
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+          <div class="user-details">
+            <span class="user-name">{{ profile['name'] || profile['preferred_username'] }}</span>
+            <span class="user-role">Administrador</span>
+          </div>
         </div>
-        <button mat-stroked-button (click)="logout()" class="logout-btn">
-          <mat-icon>logout</mat-icon> Cerrar sesión
+        <button mat-button class="logout-btn" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
         </button>
       </ng-container>
       <ng-template #loginBtn>
-        <button mat-raised-button color="primary" (click)="login()">
+        <button mat-raised-button color="primary" (click)="login()" class="login-btn">
           <mat-icon>login</mat-icon> Iniciar sesión
         </button>
       </ng-template>
     </div>
+
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="top-toolbar">
-      <span>{{ title }}</span>
-    </mat-toolbar>
     <div class="content">
       <router-outlet />
     </div>
