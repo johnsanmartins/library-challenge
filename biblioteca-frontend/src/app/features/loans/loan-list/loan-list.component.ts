@@ -12,7 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
-import { NgIf, DatePipe } from '@angular/common';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 import { LoanService } from '../../../core/services/loan.service';
 import { Loan, LoanStatus } from '../../../core/models/loan.model';
@@ -27,7 +27,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
     MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule,
     MatIconModule, MatFormFieldModule, MatSelectModule, MatDialogModule,
     MatSnackBarModule, MatChipsModule, MatTooltipModule, MatProgressSpinnerModule,
-    FormsModule, NgIf, DatePipe
+    FormsModule, NgIf, NgFor, DatePipe
   ],
   templateUrl: './loan-list.component.html',
   styleUrl: './loan-list.component.scss'
