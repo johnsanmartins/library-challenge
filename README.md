@@ -40,7 +40,7 @@ El sistema permite a los administradores de una biblioteca gestionar su catálog
 - **Perfil `local`** para desarrollo sin Keycloak: todos los endpoints quedan accesibles sin token.
 - **Migraciones declarativas** con Liquibase; la base de datos se inicializa con datos de muestra al primer arranque.
 - **Documentación de API** automática con OpenAPI 3 / Swagger UI en `/swagger-ui.html`.
-- **Cobertura de código**: JaCoCo ≥ 80% en el backend, Jest ≥ 80% en el frontend.
+- **Cobertura de código**: JaCoCo en el backend (reportes en `coverage-reports/backend/`), Jest en el frontend (reportes en `coverage-reports/frontend/`).
 - **Interfaz en español** con Angular Material, validaciones en tiempo real y datepickers nativos.
 - **Búsqueda y paginación** en todos los listados (página, tamaño, campo de ordenamiento).
 
@@ -60,7 +60,7 @@ El sistema permite a los administradores de una biblioteca gestionar su catálog
 | Cobertura backend | JaCoCo 0.8.12 (mínimo 80%) |
 | Frontend | Angular 19 (standalone), Angular Material 19 |
 | Autenticación FE | angular-oauth2-oidc (PKCE code flow) |
-| Cobertura frontend | Jest + jest-preset-angular (mínimo 80%) |
+| Cobertura frontend | Jest + jest-preset-angular |
 | Infraestructura | Docker Compose 2.x, Nginx (sirve SPA + proxy `/api`) |
 
 ---
@@ -103,8 +103,8 @@ Category  ──<  Book  >──  Author
 
 ```bash
 # 1. Clonar el repositorio
-git clone <url-del-repo>
-cd azurian-challenge
+git clone https://github.com/johnsanmartins/library-challenge.git
+cd library-challenge
 
 # 2. Levantar todos los servicios
 docker compose up --build
@@ -226,7 +226,7 @@ npm run test:coverage
 # coverage/index.html
 ```
 
-> **Umbral obligatorio:** Jest falla si branches, functions, lines o statements caen por debajo del **80%**.
+> El reporte HTML se genera en `coverage/index.html` y una copia está incluida en `coverage-reports/frontend/` en el repositorio.
 
 ---
 
