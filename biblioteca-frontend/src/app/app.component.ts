@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe, NgIf } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from './core/services/auth.service';
 
 @Component({
@@ -24,12 +24,26 @@ import { AuthService } from './core/services/auth.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'Sistema de Gestión de Biblioteca';
+  isMobile = signal(false);
+  sidenavOpened = signal(true);
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private breakpointObserver: BreakpointObserver
+  ) {}
 
   ngOnInit(): void {
     this.authService.initAuth();
+    this.breakpointObserver
+      .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
+      .subscribe(result => {
+        this.isMobile.set(result.matches);
+        this.sidenavOpened.set(!result.matches);
+      });
+  }
+
+  toggleSidenav(): void {
+    this.sidenavOpened.set(!this.sidenavOpened());
   }
 
   login(): void {

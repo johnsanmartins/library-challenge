@@ -186,3 +186,48 @@ html, body {
   align-items: center;
   padding: 80px 40px;
 }
+
+// ── Responsive ─────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    h1 { font-size: 18px; }
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .search-bar {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .table-container {
+    border-radius: 8px;
+    overflow-x: auto;
+
+    table {
+      min-width: 560px;
+    }
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .mat-column-actions {
+    width: 80px;
+  }
+}

@@ -1,5 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav mode="side" opened class="sidenav">
+  <mat-sidenav
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="sidenavOpened()"
+    (closed)="sidenavOpened.set(false)"
+    class="sidenav">
 
     <div class="sidenav-brand">
       <div class="brand-icon">
@@ -13,19 +17,19 @@
 
     <nav class="sidenav-nav">
       <p class="nav-section-label">MÓDULOS</p>
-      <a routerLink="/books" routerLinkActive="active-link" class="nav-item">
+      <a routerLink="/books" routerLinkActive="active-link" class="nav-item" (click)="isMobile() && sidenavOpened.set(false)">
         <mat-icon class="nav-icon">book</mat-icon>
         <span class="nav-label">Libros</span>
       </a>
-      <a routerLink="/authors" routerLinkActive="active-link" class="nav-item">
+      <a routerLink="/authors" routerLinkActive="active-link" class="nav-item" (click)="isMobile() && sidenavOpened.set(false)">
         <mat-icon class="nav-icon">person</mat-icon>
         <span class="nav-label">Autores</span>
       </a>
-      <a routerLink="/clients" routerLinkActive="active-link" class="nav-item">
+      <a routerLink="/clients" routerLinkActive="active-link" class="nav-item" (click)="isMobile() && sidenavOpened.set(false)">
         <mat-icon class="nav-icon">people</mat-icon>
         <span class="nav-label">Clientes</span>
       </a>
-      <a routerLink="/loans" routerLinkActive="active-link" class="nav-item">
+      <a routerLink="/loans" routerLinkActive="active-link" class="nav-item" (click)="isMobile() && sidenavOpened.set(false)">
         <mat-icon class="nav-icon">swap_horiz</mat-icon>
         <span class="nav-label">Préstamos</span>
       </a>
@@ -57,7 +61,16 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <div class="content">
+    <div class="mobile-toolbar" *ngIf="isMobile()">
+      <button mat-icon-button class="hamburger-btn" (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="mobile-brand">
+        <mat-icon>menu_book</mat-icon>
+        <span>Biblioteca</span>
+      </div>
+    </div>
+    <div class="content" [class.has-mobile-toolbar]="isMobile()">
       <router-outlet />
     </div>
   </mat-sidenav-content>

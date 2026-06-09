@@ -60,7 +60,6 @@
   font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
   font-weight: 400;
-  letter-spacing: 0.1px;
   font-family: 'Inter', sans-serif;
 }
 
@@ -96,9 +95,7 @@
     background-color: rgba(255, 255, 255, 0.12);
     color: white;
 
-    .nav-icon {
-      color: white;
-    }
+    .nav-icon { color: white; }
   }
 }
 
@@ -122,16 +119,11 @@
   background-color: rgba(255, 255, 255, 0.18) !important;
   color: white !important;
 
-  .nav-icon {
-    color: white !important;
-  }
-
-  .nav-label {
-    font-weight: 600;
-  }
+  .nav-icon { color: white !important; }
+  .nav-label { font-weight: 600; }
 }
 
-// Footer / user section
+// Footer
 .sidenav-footer {
   padding: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -208,9 +200,47 @@
   border-radius: 9px !important;
 }
 
+// ── Mobile toolbar ─────────────────────────────────────────────
+.mobile-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 12px;
+  background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger-btn {
+  color: white !important;
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
 // ── Content area ───────────────────────────────────────────────
 .content {
   overflow-y: auto;
   height: 100vh;
   background-color: #f0f2f5;
+
+  &.has-mobile-toolbar {
+    height: calc(100vh - 56px);
+  }
 }
