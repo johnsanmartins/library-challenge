@@ -1,0 +1,90 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Préstamos</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Nuevo Préstamo
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" style="width:220px;margin-bottom:16px">
+    <mat-label>Filtrar por estado</mat-label>
+    <mat-select [(ngModel)]="statusFilter" (ngModelChange)="onStatusChange()">
+      <mat-option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="table-container" *ngIf="!loading(); else spinner">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+
+      <ng-container matColumnDef="book">
+        <th mat-header-cell *matHeaderCellDef>Libro</th>
+        <td mat-cell *matCellDef="let l">{{ l.book.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="client">
+        <th mat-header-cell *matHeaderCellDef>Cliente</th>
+        <td mat-cell *matCellDef="let l">{{ l.client.firstName }} {{ l.client.lastName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="loanDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de préstamo</th>
+        <td mat-cell *matCellDef="let l">{{ l.loanDate | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dueDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de vencimiento</th>
+        <td mat-cell *matCellDef="let l">
+          <span [style.color]="l.status === 'OVERDUE' ? '#c62828' : 'inherit'">
+            {{ l.dueDate | date:'mediumDate' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="returnDate">
+        <th mat-header-cell *matHeaderCellDef>Fecha de devolución</th>
+        <td mat-cell *matCellDef="let l">{{ l.returnDate ? (l.returnDate | date:'mediumDate') : '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let l">
+          <mat-chip [class]="getStatusClass(l.status)">{{ getStatusLabel(l.status) }}</mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let l">
+          <button mat-icon-button color="primary"
+            *ngIf="l.status === 'ACTIVE'"
+            (click)="openReturnDialog(l)"
+            matTooltip="Devolver libro">
+            <mat-icon>assignment_return</mat-icon>
+          </button>
+          <button mat-icon-button color="warn"
+            [disabled]="l.status === 'ACTIVE'"
+            (click)="openDeleteDialog(l)"
+            matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="no-data-row" [attr.colspan]="displayedColumns.length">No se encontraron préstamos</td>
+      </tr>
+    </table>
+
+    <mat-paginator [length]="totalElements()" [pageSize]="pageSize"
+      [pageSizeOptions]="[5,10,25]" (page)="onPageChange($event)" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
+  <ng-template #spinner>
+    <div style="display:flex;justify-content:center;padding:40px">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  </ng-template>
+</div>

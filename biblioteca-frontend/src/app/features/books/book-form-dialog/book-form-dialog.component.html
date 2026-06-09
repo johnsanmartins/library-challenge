@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Libro' : 'Agregar Libro' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título *</mat-label>
+      <input matInput formControlName="title" maxlength="255">
+      <mat-hint align="end">{{ form.get('title')?.value?.length || 0 }}/255</mat-hint>
+      <mat-error *ngIf="form.get('title')?.hasError('required')">El título es requerido</mat-error>
+      <mat-error *ngIf="form.get('title')?.hasError('maxlength')">Máximo 255 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>ISBN</mat-label>
+      <input matInput formControlName="isbn" placeholder="978-..." maxlength="17">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Año de publicación</mat-label>
+      <input matInput formControlName="publishedYear"
+             inputmode="numeric" maxlength="4"
+             (keypress)="allowDigits($event)">
+      <mat-error *ngIf="form.get('publishedYear')?.hasError('min')">Mínimo año 1000</mat-error>
+      <mat-error *ngIf="form.get('publishedYear')?.hasError('max')">Máximo año 9999</mat-error>
+      <mat-error *ngIf="form.get('publishedYear')?.hasError('pattern')">Solo 4 dígitos</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Copias disponibles *</mat-label>
+      <input matInput formControlName="availableCopies"
+             inputmode="numeric" maxlength="3"
+             (keypress)="allowDigits($event)">
+      <mat-error *ngIf="form.get('availableCopies')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('availableCopies')?.hasError('min')">No puede ser negativo</mat-error>
+      <mat-error *ngIf="form.get('availableCopies')?.hasError('max')">Máximo 999 copias</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="categoryId">
+        <mat-option [value]="null">— Sin categoría —</mat-option>
+        <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</mat-option>
+      </mat-select>
+      <mat-hint *ngIf="loadingOptions">Cargando categorías...</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Autores</mat-label>
+      <mat-select formControlName="authorIds" multiple>
+        <mat-option *ngFor="let author of authors" [value]="author.id">
+          {{ author.firstName }} {{ author.lastName }}
+        </mat-option>
+      </mat-select>
+      <mat-hint *ngIf="loadingOptions">Cargando autores...</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sinopsis</mat-label>
+      <textarea matInput formControlName="synopsis" rows="3" maxlength="1000"></textarea>
+      <mat-hint align="end">{{ form.get('synopsis')?.value?.length || 0 }}/1000</mat-hint>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || saving || loadingOptions">
+    {{ saving ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear') }}
+  </button>
+</mat-dialog-actions>

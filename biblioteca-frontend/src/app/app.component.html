@@ -1,0 +1,53 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <mat-toolbar color="primary" class="sidenav-header">
+      <mat-icon>menu_book</mat-icon>
+      <span class="sidenav-title">Biblioteca</span>
+    </mat-toolbar>
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/books" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>book</mat-icon>
+        <span matListItemTitle>Libros</span>
+      </a>
+      <a mat-list-item routerLink="/authors" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Autores</span>
+      </a>
+      <a mat-list-item routerLink="/clients" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Clientes</span>
+      </a>
+      <a mat-list-item routerLink="/loans" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>swap_horiz</mat-icon>
+        <span matListItemTitle>Préstamos</span>
+      </a>
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtn">
+        <div class="user-info" *ngIf="authService.userProfile$ | async as profile">
+          <mat-icon>account_circle</mat-icon>
+          <span>{{ profile['name'] || profile['preferred_username'] }}</span>
+        </div>
+        <button mat-stroked-button (click)="logout()" class="logout-btn">
+          <mat-icon>logout</mat-icon> Cerrar sesión
+        </button>
+      </ng-container>
+      <ng-template #loginBtn>
+        <button mat-raised-button color="primary" (click)="login()">
+          <mat-icon>login</mat-icon> Iniciar sesión
+        </button>
+      </ng-template>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="top-toolbar">
+      <span>{{ title }}</span>
+    </mat-toolbar>
+    <div class="content">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

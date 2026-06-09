@@ -1,0 +1,57 @@
+{
+  "realm": "library",
+  "enabled": true,
+  "displayName": "Library Management",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "roles": {
+    "realm": [
+      { "name": "library-admin", "description": "Library administrator" },
+      { "name": "library-user",  "description": "Library user" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "library-frontend",
+      "name": "Library Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:80/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:80"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@library.local",
+      "firstName": "Admin",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
+      "realmRoles": ["library-admin", "library-user"]
+    },
+    {
+      "username": "user1",
+      "email": "user1@library.local",
+      "firstName": "Regular",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "user123", "temporary": false }],
+      "realmRoles": ["library-user"]
+    }
+  ]
+}

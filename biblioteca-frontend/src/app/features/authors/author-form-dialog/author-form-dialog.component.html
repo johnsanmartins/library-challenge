@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Autor' : 'Agregar Autor' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" style="display:flex;flex-direction:column;gap:4px;padding-top:8px">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre *</mat-label>
+      <input matInput formControlName="firstName" maxlength="100" (keypress)="allowLetters($event)">
+      <mat-error *ngIf="form.get('firstName')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.hasError('lettersOnly')">Solo se permiten letras</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Apellido *</mat-label>
+      <input matInput formControlName="lastName" maxlength="100" (keypress)="allowLetters($event)">
+      <mat-error *ngIf="form.get('lastName')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('lastName')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+      <mat-error *ngIf="form.get('lastName')?.hasError('lettersOnly')">Solo se permiten letras</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nacionalidad</mat-label>
+      <input matInput formControlName="nationality" maxlength="100" (keypress)="allowLetters($event)">
+      <mat-hint>Solo letras</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de nacimiento</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthDate"
+             [max]="maxDate" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-hint>Seleccione usando el calendario</mat-hint>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || saving">
+    {{ saving ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear') }}
+  </button>
+</mat-dialog-actions>

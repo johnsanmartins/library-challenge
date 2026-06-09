@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Cliente' : 'Agregar Cliente' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" style="display:flex;flex-direction:column;gap:4px;padding-top:8px">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre *</mat-label>
+      <input matInput formControlName="firstName" maxlength="100" (keypress)="allowLetters($event)">
+      <mat-error *ngIf="form.get('firstName')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.hasError('lettersOnly')">Solo se permiten letras</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Apellido *</mat-label>
+      <input matInput formControlName="lastName" maxlength="100" (keypress)="allowLetters($event)">
+      <mat-error *ngIf="form.get('lastName')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('lastName')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+      <mat-error *ngIf="form.get('lastName')?.hasError('lettersOnly')">Solo se permiten letras</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Correo electrónico *</mat-label>
+      <input matInput type="email" formControlName="email" maxlength="150">
+      <mat-error *ngIf="form.get('email')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Correo inválido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" placeholder="+56 9 1234 5678"
+             (keypress)="allowPhoneChars($event)">
+      <mat-hint>Solo números, +, espacios, guiones y paréntesis (7-20 caracteres)</mat-hint>
+      <mat-error *ngIf="form.get('phone')?.hasError('pattern')">Número de teléfono inválido</mat-error>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || saving">
+    {{ saving ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear') }}
+  </button>
+</mat-dialog-actions>

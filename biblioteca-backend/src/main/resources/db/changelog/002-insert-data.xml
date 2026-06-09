@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="002-insert-categories" author="azurian">
+        <insert tableName="categories">
+            <column name="name" value="Fiction"/>
+            <column name="description" value="Works of imaginative narration"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Science Fiction"/>
+            <column name="description" value="Speculative fiction involving science and technology"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Non-Fiction"/>
+            <column name="description" value="Works based on real events and facts"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Technology"/>
+            <column name="description" value="Books about software, hardware and computing"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Classic Literature"/>
+            <column name="description" value="Timeless works recognized for artistic quality"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="002-insert-authors" author="azurian">
+        <insert tableName="authors">
+            <column name="first_name" value="Gabriel"/>
+            <column name="last_name" value="García Márquez"/>
+            <column name="nationality" value="Colombian"/>
+            <column name="birth_date" value="1927-03-06"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="first_name" value="Isabel"/>
+            <column name="last_name" value="Allende"/>
+            <column name="nationality" value="Chilean"/>
+            <column name="birth_date" value="1942-08-02"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="first_name" value="George"/>
+            <column name="last_name" value="Orwell"/>
+            <column name="nationality" value="British"/>
+            <column name="birth_date" value="1903-06-25"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="first_name" value="Frank"/>
+            <column name="last_name" value="Herbert"/>
+            <column name="nationality" value="American"/>
+            <column name="birth_date" value="1920-10-08"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="first_name" value="Robert C."/>
+            <column name="last_name" value="Martin"/>
+            <column name="nationality" value="American"/>
+            <column name="birth_date" value="1952-12-05"/>
+        </insert>
+        <insert tableName="authors">
+            <column name="first_name" value="Martin"/>
+            <column name="last_name" value="Fowler"/>
+            <column name="nationality" value="British"/>
+            <column name="birth_date" value="1963-12-18"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="002-insert-books" author="azurian">
+        <insert tableName="books">
+            <column name="title" value="Cien años de soledad"/>
+            <column name="isbn" value="978-0060883287"/>
+            <column name="published_year" valueNumeric="1967"/>
+            <column name="synopsis" value="The story of the Buendía family across seven generations in the fictional town of Macondo."/>
+            <column name="available_copies" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="books">
+            <column name="title" value="1984"/>
+            <column name="isbn" value="978-0451524935"/>
+            <column name="published_year" valueNumeric="1949"/>
+            <column name="synopsis" value="A dystopian novel about a totalitarian society under constant surveillance."/>
+            <column name="available_copies" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="books">
+            <column name="title" value="Dune"/>
+            <column name="isbn" value="978-0441013593"/>
+            <column name="published_year" valueNumeric="1965"/>
+            <column name="synopsis" value="An epic science fiction saga about politics, religion, and ecology on a desert planet."/>
+            <column name="available_copies" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="books">
+            <column name="title" value="Clean Code"/>
+            <column name="isbn" value="978-0132350884"/>
+            <column name="published_year" valueNumeric="2008"/>
+            <column name="synopsis" value="A handbook of agile software craftsmanship with practical advice on writing maintainable code."/>
+            <column name="available_copies" valueNumeric="6"/>
+            <column name="category_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="books">
+            <column name="title" value="Refactoring"/>
+            <column name="isbn" value="978-0201485677"/>
+            <column name="published_year" valueNumeric="1999"/>
+            <column name="synopsis" value="Techniques for improving the design of existing code."/>
+            <column name="available_copies" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="books">
+            <column name="title" value="La casa de los espíritus"/>
+            <column name="isbn" value="978-8401352850"/>
+            <column name="published_year" valueNumeric="1982"/>
+            <column name="synopsis" value="A multigenerational saga of a family in an unnamed Latin American country."/>
+            <column name="available_copies" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="002-insert-book-authors" author="azurian">
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="1"/>
+            <column name="author_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="2"/>
+            <column name="author_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="3"/>
+            <column name="author_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="4"/>
+            <column name="author_id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="5"/>
+            <column name="author_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="book_authors">
+            <column name="book_id" valueNumeric="6"/>
+            <column name="author_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="002-insert-clients" author="azurian">
+        <insert tableName="clients">
+            <column name="first_name" value="Carlos"/>
+            <column name="last_name" value="Rodríguez"/>
+            <column name="email" value="carlos.rodriguez@example.com"/>
+            <column name="phone" value="+56912345678"/>
+            <column name="registration_date" value="2024-01-15"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="first_name" value="María"/>
+            <column name="last_name" value="González"/>
+            <column name="email" value="maria.gonzalez@example.com"/>
+            <column name="phone" value="+56998765432"/>
+            <column name="registration_date" value="2024-02-20"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="first_name" value="Juan"/>
+            <column name="last_name" value="Pérez"/>
+            <column name="email" value="juan.perez@example.com"/>
+            <column name="phone" value="+56987654321"/>
+            <column name="registration_date" value="2024-03-10"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="first_name" value="Ana"/>
+            <column name="last_name" value="Martínez"/>
+            <column name="email" value="ana.martinez@example.com"/>
+            <column name="phone" value="+56976543210"/>
+            <column name="registration_date" value="2024-04-05"/>
+        </insert>
+        <insert tableName="clients">
+            <column name="first_name" value="Luis"/>
+            <column name="last_name" value="Sánchez"/>
+            <column name="email" value="luis.sanchez@example.com"/>
+            <column name="phone" value="+56965432109"/>
+            <column name="registration_date" value="2024-05-12"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="002-insert-loans" author="azurian">
+        <insert tableName="loans">
+            <column name="book_id" valueNumeric="1"/>
+            <column name="client_id" valueNumeric="1"/>
+            <column name="loan_date" value="2026-05-01"/>
+            <column name="due_date" value="2026-06-01"/>
+            <column name="status" value="ACTIVE"/>
+        </insert>
+        <insert tableName="loans">
+            <column name="book_id" valueNumeric="4"/>
+            <column name="client_id" valueNumeric="2"/>
+            <column name="loan_date" value="2026-04-10"/>
+            <column name="due_date" value="2026-05-10"/>
+            <column name="return_date" value="2026-05-08"/>
+            <column name="status" value="RETURNED"/>
+        </insert>
+        <insert tableName="loans">
+            <column name="book_id" valueNumeric="2"/>
+            <column name="client_id" valueNumeric="3"/>
+            <column name="loan_date" value="2026-04-15"/>
+            <column name="due_date" value="2026-05-15"/>
+            <column name="status" value="OVERDUE"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

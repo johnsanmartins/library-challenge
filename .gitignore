@@ -1,0 +1,40 @@
+# Maven
+biblioteca-backend/target/
+biblioteca-backend/.mvn/wrapper/maven-wrapper.jar
+biblioteca-backend/.classpath
+biblioteca-backend/.project
+biblioteca-backend/.settings/
+
+# Node / Angular
+biblioteca-frontend/node_modules/
+biblioteca-frontend/dist/
+biblioteca-frontend/.angular/
+biblioteca-frontend/.cache/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (local state)
+postgres_data/
+
+# Environment secrets
+.env
+.env.local
+
+# Claude Code session files
+.claude/

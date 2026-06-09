@@ -1,0 +1,12 @@
+# Perfil local: sin Keycloak, todos los endpoints accesibles para pruebas
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ""   # vacío, no conecta a Keycloak
+
+logging:
+  level:
+    com.azurian.library: DEBUG
+    org.springframework.security: DEBUG
