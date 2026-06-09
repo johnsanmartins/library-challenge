@@ -34,6 +34,7 @@ services:
     command: start-dev --import-realm
     volumes:
       - ./keycloak/realm-library.json:/opt/keycloak/data/import/realm-library.json
+      - ./keycloak/themes:/opt/keycloak/themes
     ports:
       - "8180:8080"
     depends_on:

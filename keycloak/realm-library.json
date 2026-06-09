@@ -2,6 +2,7 @@
   "realm": "library",
   "enabled": true,
   "displayName": "Library Management",
+  "loginTheme": "library",
   "registrationAllowed": true,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
