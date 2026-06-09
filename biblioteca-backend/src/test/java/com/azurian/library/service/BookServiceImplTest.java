@@ -197,7 +197,6 @@ class BookServiceImplTest {
     @DisplayName("update should update and return book")
     void update_shouldUpdateBook() {
         when(bookRepository.findByIdWithDetails(1L)).thenReturn(Optional.of(testBook));
-        when(bookRepository.existsByIsbn(any())).thenReturn(false);
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(testCategory));
         when(authorRepository.findAllById(any())).thenReturn(List.of(testAuthor));
         when(bookRepository.save(testBook)).thenReturn(testBook);

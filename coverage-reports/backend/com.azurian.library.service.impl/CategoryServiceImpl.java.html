@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoryServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.service.impl</a> &gt; <span class="el_source">CategoryServiceImpl.java</span></div><h1>CategoryServiceImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.service.impl;
+
+import com.azurian.library.domain.Category;
+import com.azurian.library.dto.request.CategoryRequest;
+import com.azurian.library.dto.response.CategoryResponse;
+import com.azurian.library.exception.BusinessException;
+import com.azurian.library.exception.ResourceNotFoundException;
+import com.azurian.library.mapper.CategoryMapper;
+import com.azurian.library.repository.CategoryRepository;
+import com.azurian.library.service.CategoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+<span class="nc" id="L20">@Slf4j</span>
+@Transactional(readOnly = true)
+public class CategoryServiceImpl implements CategoryService {
+
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
+    @Override
+    public Page&lt;CategoryResponse&gt; findAll(String search, Pageable pageable) {
+<span class="nc" id="L29">        log.debug(&quot;Finding all categories with search='{}', pageable={}&quot;, search, pageable);</span>
+<span class="nc bnc" id="L30" title="All 4 branches missed.">        if (search != null &amp;&amp; !search.isBlank()) {</span>
+<span class="nc" id="L31">            return categoryRepository.findByNameContainingIgnoreCase(search, pageable)</span>
+<span class="nc" id="L32">                    .map(categoryMapper::toResponse);</span>
+        }
+<span class="nc" id="L34">        return categoryRepository.findAll(pageable).map(categoryMapper::toResponse);</span>
+    }
+
+    @Override
+    public CategoryResponse findById(Long id) {
+<span class="nc" id="L39">        log.debug(&quot;Finding category by id={}&quot;, id);</span>
+<span class="nc" id="L40">        return categoryMapper.toResponse(findCategoryOrThrow(id));</span>
+    }
+
+    @Override
+    @Transactional
+    public CategoryResponse create(CategoryRequest request) {
+<span class="nc" id="L46">        log.info(&quot;Creating category with name='{}'&quot;, request.getName());</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (categoryRepository.existsByNameIgnoreCase(request.getName())) {</span>
+<span class="nc" id="L48">            throw new BusinessException(&quot;Category with name '&quot; + request.getName() + &quot;' already exists&quot;);</span>
+        }
+<span class="nc" id="L50">        Category saved = categoryRepository.save(categoryMapper.toEntity(request));</span>
+<span class="nc" id="L51">        log.info(&quot;Category created with id={}&quot;, saved.getId());</span>
+<span class="nc" id="L52">        return categoryMapper.toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public CategoryResponse update(Long id, CategoryRequest request) {
+<span class="nc" id="L58">        log.info(&quot;Updating category id={}&quot;, id);</span>
+<span class="nc" id="L59">        Category category = findCategoryOrThrow(id);</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (!category.getName().equalsIgnoreCase(request.getName())</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                &amp;&amp; categoryRepository.existsByNameIgnoreCase(request.getName())) {</span>
+<span class="nc" id="L62">            throw new BusinessException(&quot;Category with name '&quot; + request.getName() + &quot;' already exists&quot;);</span>
+        }
+<span class="nc" id="L64">        categoryMapper.updateEntity(request, category);</span>
+<span class="nc" id="L65">        return categoryMapper.toResponse(categoryRepository.save(category));</span>
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+<span class="nc" id="L71">        log.info(&quot;Deleting category id={}&quot;, id);</span>
+<span class="nc" id="L72">        Category category = findCategoryOrThrow(id);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (!category.getBooks().isEmpty()) {</span>
+<span class="nc" id="L74">            throw new BusinessException(&quot;Cannot delete category with associated books&quot;);</span>
+        }
+<span class="nc" id="L76">        categoryRepository.delete(category);</span>
+<span class="nc" id="L77">    }</span>
+
+    private Category findCategoryOrThrow(Long id) {
+<span class="nc" id="L80">        return categoryRepository.findById(id)</span>
+<span class="nc" id="L81">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

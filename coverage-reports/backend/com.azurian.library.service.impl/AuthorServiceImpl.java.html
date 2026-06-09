@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthorServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.service.impl</a> &gt; <span class="el_source">AuthorServiceImpl.java</span></div><h1>AuthorServiceImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.service.impl;
+
+import com.azurian.library.domain.Author;
+import com.azurian.library.dto.request.AuthorRequest;
+import com.azurian.library.dto.response.AuthorResponse;
+import com.azurian.library.exception.BusinessException;
+import com.azurian.library.exception.ResourceNotFoundException;
+import com.azurian.library.mapper.AuthorMapper;
+import com.azurian.library.repository.AuthorRepository;
+import com.azurian.library.service.AuthorService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L20">@Slf4j</span>
+@Transactional(readOnly = true)
+public class AuthorServiceImpl implements AuthorService {
+
+    private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
+
+    @Override
+    public Page&lt;AuthorResponse&gt; findAll(String search, Pageable pageable) {
+<span class="fc" id="L29">        log.debug(&quot;Finding all authors with search='{}'&quot;, search);</span>
+<span class="pc bpc" id="L30" title="1 of 4 branches missed.">        Page&lt;Author&gt; page = (search != null &amp;&amp; !search.isBlank())</span>
+<span class="fc" id="L31">                ? authorRepository.findBySearch(search, pageable)</span>
+<span class="fc" id="L32">                : authorRepository.findAll(pageable);</span>
+<span class="fc" id="L33">        return page.map(authorMapper::toResponse);</span>
+    }
+
+    @Override
+    public AuthorResponse findById(Long id) {
+<span class="fc" id="L38">        log.debug(&quot;Finding author by id={}&quot;, id);</span>
+<span class="fc" id="L39">        return authorMapper.toResponse(findAuthorOrThrow(id));</span>
+    }
+
+    @Override
+    @Transactional
+    public AuthorResponse create(AuthorRequest request) {
+<span class="fc" id="L45">        log.info(&quot;Creating author: {} {}&quot;, request.getFirstName(), request.getLastName());</span>
+<span class="fc" id="L46">        Author saved = authorRepository.save(authorMapper.toEntity(request));</span>
+<span class="fc" id="L47">        log.info(&quot;Author created with id={}&quot;, saved.getId());</span>
+<span class="fc" id="L48">        return authorMapper.toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public AuthorResponse update(Long id, AuthorRequest request) {
+<span class="fc" id="L54">        log.info(&quot;Updating author id={}&quot;, id);</span>
+<span class="fc" id="L55">        Author author = findAuthorOrThrow(id);</span>
+<span class="fc" id="L56">        authorMapper.updateEntity(request, author);</span>
+<span class="fc" id="L57">        return authorMapper.toResponse(authorRepository.save(author));</span>
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+<span class="fc" id="L63">        log.info(&quot;Deleting author id={}&quot;, id);</span>
+<span class="fc" id="L64">        Author author = findAuthorOrThrow(id);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (!author.getBooks().isEmpty()) {</span>
+<span class="nc" id="L66">            throw new BusinessException(</span>
+<span class="nc" id="L67">                &quot;No se puede eliminar el autor porque tiene &quot; + author.getBooks().size() +</span>
+                &quot; libro(s) asociado(s). Primero debe desvincular los libros.&quot;);
+        }
+<span class="fc" id="L70">        authorRepository.delete(author);</span>
+<span class="fc" id="L71">    }</span>
+
+    private Author findAuthorOrThrow(Long id) {
+<span class="fc" id="L74">        return authorRepository.findById(id)</span>
+<span class="fc" id="L75">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Author&quot;, id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

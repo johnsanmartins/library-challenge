@@ -145,7 +145,6 @@ class ClientServiceImplTest {
     @DisplayName("update should update client")
     void update_shouldUpdateClient() {
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
-        when(clientRepository.existsByEmail(any())).thenReturn(false);
         when(clientRepository.save(testClient)).thenReturn(testClient);
         when(clientMapper.toResponse(testClient)).thenReturn(testClientResponse);
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoryMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.mapper</a> &gt; <span class="el_source">CategoryMapperImpl.java</span></div><h1>CategoryMapperImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.mapper;
+
+import com.azurian.library.domain.Category;
+import com.azurian.library.dto.request.CategoryRequest;
+import com.azurian.library.dto.response.CategoryResponse;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-06-09T18:53:08-0400&quot;,
+    comments = &quot;version: 1.6.2, compiler: javac, environment: Java 21.0.8 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L15">public class CategoryMapperImpl implements CategoryMapper {</span>
+
+    @Override
+    public CategoryResponse toResponse(Category category) {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        if ( category == null ) {</span>
+<span class="nc" id="L20">            return null;</span>
+        }
+
+<span class="nc" id="L23">        CategoryResponse categoryResponse = new CategoryResponse();</span>
+
+<span class="nc" id="L25">        categoryResponse.setId( category.getId() );</span>
+<span class="nc" id="L26">        categoryResponse.setName( category.getName() );</span>
+<span class="nc" id="L27">        categoryResponse.setDescription( category.getDescription() );</span>
+
+<span class="nc" id="L29">        categoryResponse.setBookCount( category.getBooks().size() );</span>
+
+<span class="nc" id="L31">        return categoryResponse;</span>
+    }
+
+    @Override
+    public Category toEntity(CategoryRequest request) {
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L37">            return null;</span>
+        }
+
+<span class="nc" id="L40">        Category.CategoryBuilder category = Category.builder();</span>
+
+<span class="nc" id="L42">        category.name( request.getName() );</span>
+<span class="nc" id="L43">        category.description( request.getDescription() );</span>
+
+<span class="nc" id="L45">        return category.build();</span>
+    }
+
+    @Override
+    public void updateEntity(CategoryRequest request, Category category) {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L51">            return;</span>
+        }
+
+<span class="nc" id="L54">        category.setName( request.getName() );</span>
+<span class="nc" id="L55">        category.setDescription( request.getDescription() );</span>
+<span class="nc" id="L56">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

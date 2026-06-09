@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoanServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.service.impl</a> &gt; <span class="el_source">LoanServiceImpl.java</span></div><h1>LoanServiceImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.service.impl;
+
+import com.azurian.library.domain.Book;
+import com.azurian.library.domain.Client;
+import com.azurian.library.domain.Loan;
+import com.azurian.library.domain.LoanStatus;
+import com.azurian.library.dto.request.LoanRequest;
+import com.azurian.library.dto.response.LoanResponse;
+import com.azurian.library.exception.BusinessException;
+import com.azurian.library.exception.ResourceNotFoundException;
+import com.azurian.library.mapper.LoanMapper;
+import com.azurian.library.repository.BookRepository;
+import com.azurian.library.repository.ClientRepository;
+import com.azurian.library.repository.LoanRepository;
+import com.azurian.library.service.LoanService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L27">@Slf4j</span>
+@Transactional(readOnly = true)
+public class LoanServiceImpl implements LoanService {
+
+    private final LoanRepository loanRepository;
+    private final BookRepository bookRepository;
+    private final ClientRepository clientRepository;
+    private final LoanMapper loanMapper;
+
+    @Override
+    public Page&lt;LoanResponse&gt; findAll(LoanStatus status, Pageable pageable) {
+<span class="fc" id="L38">        log.debug(&quot;Finding all loans with status={}&quot;, status);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        Page&lt;Loan&gt; page = (status != null)</span>
+<span class="fc" id="L40">                ? loanRepository.findByStatus(status, pageable)</span>
+<span class="fc" id="L41">                : loanRepository.findAllLoans(pageable);</span>
+<span class="fc" id="L42">        return page.map(loanMapper::toResponse);</span>
+    }
+
+    @Override
+    public LoanResponse findById(Long id) {
+<span class="fc" id="L47">        log.debug(&quot;Finding loan by id={}&quot;, id);</span>
+<span class="fc" id="L48">        return loanMapper.toResponse(findLoanOrThrow(id));</span>
+    }
+
+    @Override
+    @Transactional
+    public LoanResponse create(LoanRequest request) {
+<span class="fc" id="L54">        log.info(&quot;Creating loan for bookId={}, clientId={}&quot;, request.getBookId(), request.getClientId());</span>
+
+<span class="pc bpc" id="L56" title="2 of 4 branches missed.">        if (request.getDueDate() == null || !request.getDueDate().isAfter(LocalDate.now())) {</span>
+<span class="nc" id="L57">            throw new BusinessException(&quot;La fecha de vencimiento debe ser una fecha futura&quot;);</span>
+        }
+
+<span class="fc" id="L60">        Book book = bookRepository.findById(request.getBookId())</span>
+<span class="pc" id="L61">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Book&quot;, request.getBookId()));</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (book.getAvailableCopies() &lt;= 0) {</span>
+<span class="fc" id="L64">            throw new BusinessException(&quot;No available copies for book '&quot; + book.getTitle() + &quot;'&quot;);</span>
+        }
+
+<span class="fc" id="L67">        Client client = clientRepository.findById(request.getClientId())</span>
+<span class="pc" id="L68">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Client&quot;, request.getClientId()));</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (loanRepository.existsByBookIdAndClientIdAndStatus(book.getId(), client.getId(), LoanStatus.ACTIVE)) {</span>
+<span class="fc" id="L71">            throw new BusinessException(&quot;Client already has an active loan for this book&quot;);</span>
+        }
+
+<span class="fc" id="L74">        Loan loan = Loan.builder()</span>
+<span class="fc" id="L75">                .book(book)</span>
+<span class="fc" id="L76">                .client(client)</span>
+<span class="fc" id="L77">                .dueDate(request.getDueDate())</span>
+<span class="fc" id="L78">                .status(LoanStatus.ACTIVE)</span>
+<span class="fc" id="L79">                .build();</span>
+
+<span class="fc" id="L81">        book.setAvailableCopies(book.getAvailableCopies() - 1);</span>
+<span class="fc" id="L82">        bookRepository.save(book);</span>
+
+<span class="fc" id="L84">        Loan saved = loanRepository.save(loan);</span>
+<span class="fc" id="L85">        log.info(&quot;Loan created with id={}&quot;, saved.getId());</span>
+<span class="fc" id="L86">        return loanMapper.toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public LoanResponse update(Long id, LoanRequest request) {
+<span class="fc" id="L92">        log.info(&quot;Updating loan id={}&quot;, id);</span>
+<span class="fc" id="L93">        Loan loan = findLoanOrThrow(id);</span>
+
+<span class="pc bpc" id="L95" title="2 of 4 branches missed.">        if (request.getStatus() != null &amp;&amp; request.getStatus() == LoanStatus.RETURNED</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">                &amp;&amp; loan.getStatus() == LoanStatus.ACTIVE) {</span>
+<span class="fc" id="L97">            loan.setStatus(LoanStatus.RETURNED);</span>
+<span class="fc" id="L98">            loan.setReturnDate(java.time.LocalDate.now());</span>
+<span class="fc" id="L99">            Book book = loan.getBook();</span>
+<span class="fc" id="L100">            book.setAvailableCopies(book.getAvailableCopies() + 1);</span>
+<span class="fc" id="L101">            bookRepository.save(book);</span>
+<span class="fc" id="L102">            log.info(&quot;Loan id={} returned, book copies restored&quot;, id);</span>
+<span class="pc bnc" id="L103" title="All 2 branches missed.">        } else if (request.getStatus() != null) {</span>
+<span class="nc" id="L104">            loan.setStatus(request.getStatus());</span>
+        }
+
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (request.getDueDate() != null) {</span>
+<span class="fc" id="L108">            loan.setDueDate(request.getDueDate());</span>
+        }
+
+<span class="fc" id="L111">        return loanMapper.toResponse(loanRepository.save(loan));</span>
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+<span class="fc" id="L117">        log.info(&quot;Deleting loan id={}&quot;, id);</span>
+<span class="fc" id="L118">        Loan loan = findLoanOrThrow(id);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (loan.getStatus() == LoanStatus.ACTIVE) {</span>
+<span class="fc" id="L120">            throw new BusinessException(&quot;Cannot delete an active loan. Return the book first.&quot;);</span>
+        }
+<span class="fc" id="L122">        loanRepository.delete(loan);</span>
+<span class="fc" id="L123">    }</span>
+
+    private Loan findLoanOrThrow(Long id) {
+<span class="fc" id="L126">        return loanRepository.findById(id)</span>
+<span class="fc" id="L127">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Loan&quot;, id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

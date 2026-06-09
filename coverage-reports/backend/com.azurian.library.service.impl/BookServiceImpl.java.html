@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.service.impl</a> &gt; <span class="el_source">BookServiceImpl.java</span></div><h1>BookServiceImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.service.impl;
+
+import com.azurian.library.domain.Author;
+import com.azurian.library.domain.Book;
+import com.azurian.library.domain.Category;
+import com.azurian.library.dto.request.BookRequest;
+import com.azurian.library.dto.response.BookResponse;
+import com.azurian.library.exception.BusinessException;
+import com.azurian.library.exception.ResourceNotFoundException;
+import com.azurian.library.mapper.BookMapper;
+import com.azurian.library.repository.AuthorRepository;
+import com.azurian.library.repository.BookRepository;
+import com.azurian.library.repository.CategoryRepository;
+import com.azurian.library.service.BookService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L27">@Slf4j</span>
+@Transactional(readOnly = true)
+public class BookServiceImpl implements BookService {
+
+    private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
+    private final AuthorRepository authorRepository;
+    private final BookMapper bookMapper;
+
+    @Override
+    public Page&lt;BookResponse&gt; findAll(String search, Pageable pageable) {
+<span class="fc" id="L38">        log.debug(&quot;Finding all books with search='{}'&quot;, search);</span>
+<span class="pc bpc" id="L39" title="1 of 4 branches missed.">        Page&lt;Book&gt; page = (search != null &amp;&amp; !search.isBlank())</span>
+<span class="fc" id="L40">                ? bookRepository.findBySearch(search, pageable)</span>
+<span class="fc" id="L41">                : bookRepository.findAllBooks(pageable);</span>
+<span class="fc" id="L42">        return page.map(bookMapper::toResponse);</span>
+    }
+
+    @Override
+    public BookResponse findById(Long id) {
+<span class="fc" id="L47">        log.debug(&quot;Finding book by id={}&quot;, id);</span>
+<span class="fc" id="L48">        return bookMapper.toResponse(findBookOrThrow(id));</span>
+    }
+
+    @Override
+    @Transactional
+    public BookResponse create(BookRequest request) {
+<span class="fc" id="L54">        log.info(&quot;Creating book with title='{}'&quot;, request.getTitle());</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (request.getIsbn() != null &amp;&amp; bookRepository.existsByIsbn(request.getIsbn())) {</span>
+<span class="fc" id="L56">            throw new BusinessException(&quot;Book with ISBN '&quot; + request.getIsbn() + &quot;' already exists&quot;);</span>
+        }
+
+<span class="fc" id="L59">        Book book = bookMapper.toEntity(request);</span>
+<span class="fc" id="L60">        resolveAssociations(book, request);</span>
+
+<span class="fc" id="L62">        Book saved = bookRepository.save(book);</span>
+<span class="fc" id="L63">        log.info(&quot;Book created with id={}&quot;, saved.getId());</span>
+<span class="fc" id="L64">        return bookMapper.toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public BookResponse update(Long id, BookRequest request) {
+<span class="fc" id="L70">        log.info(&quot;Updating book id={}&quot;, id);</span>
+<span class="fc" id="L71">        Book book = findBookOrThrow(id);</span>
+
+<span class="pc bpc" id="L73" title="2 of 4 branches missed.">        if (request.getIsbn() != null &amp;&amp; !request.getIsbn().equals(book.getIsbn())</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                &amp;&amp; bookRepository.existsByIsbn(request.getIsbn())) {</span>
+<span class="nc" id="L75">            throw new BusinessException(&quot;Book with ISBN '&quot; + request.getIsbn() + &quot;' already exists&quot;);</span>
+        }
+
+<span class="fc" id="L78">        bookMapper.updateEntity(request, book);</span>
+<span class="fc" id="L79">        resolveAssociations(book, request);</span>
+<span class="fc" id="L80">        return bookMapper.toResponse(bookRepository.save(book));</span>
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+<span class="fc" id="L86">        log.info(&quot;Deleting book id={}&quot;, id);</span>
+<span class="fc" id="L87">        Book book = findBookOrThrow(id);</span>
+<span class="fc" id="L88">        bookRepository.delete(book);</span>
+<span class="fc" id="L89">    }</span>
+
+    private void resolveAssociations(Book book, BookRequest request) {
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (request.getCategoryId() != null) {</span>
+<span class="fc" id="L93">            Category category = categoryRepository.findById(request.getCategoryId())</span>
+<span class="fc" id="L94">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, request.getCategoryId()));</span>
+<span class="fc" id="L95">            book.setCategory(category);</span>
+<span class="fc" id="L96">        } else {</span>
+<span class="nc" id="L97">            book.setCategory(null);</span>
+        }
+
+<span class="pc bpc" id="L100" title="2 of 4 branches missed.">        if (request.getAuthorIds() != null &amp;&amp; !request.getAuthorIds().isEmpty()) {</span>
+<span class="fc" id="L101">            Set&lt;Author&gt; authors = new HashSet&lt;&gt;(authorRepository.findAllById(request.getAuthorIds()));</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (authors.size() != request.getAuthorIds().size()) {</span>
+<span class="fc" id="L103">                throw new BusinessException(&quot;One or more author IDs are invalid&quot;);</span>
+            }
+<span class="fc" id="L105">            book.setAuthors(authors);</span>
+<span class="fc" id="L106">        } else {</span>
+<span class="nc" id="L107">            book.setAuthors(new HashSet&lt;&gt;());</span>
+        }
+<span class="fc" id="L109">    }</span>
+
+    private Book findBookOrThrow(Long id) {
+<span class="fc" id="L112">        return bookRepository.findByIdWithDetails(id)</span>
+<span class="fc" id="L113">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Book&quot;, id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

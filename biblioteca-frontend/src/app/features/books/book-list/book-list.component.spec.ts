@@ -82,7 +82,7 @@ describe('BookListComponent', () => {
     dialogMock.open.mockReturnValue({ afterClosed: () => of(true) } as any);
     component.openDeleteDialog(mockBook);
     expect(bookServiceMock.delete).toHaveBeenCalledWith(1);
-    expect(snackBarMock.open).toHaveBeenCalledWith('Book deleted', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Libro eliminado', 'Cerrar', expect.any(Object));
   });
 
   it('should not delete when dialog cancelled', () => {
@@ -94,7 +94,7 @@ describe('BookListComponent', () => {
   it('should show error when load fails', () => {
     bookServiceMock.getAll.mockReturnValue(throwError(() => new Error('fail')));
     component.loadBooks();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Failed to load books', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Error al cargar los libros', 'Cerrar', expect.any(Object));
   });
 
   it('getAuthorNames should return formatted names', () => {

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.service.impl</a> &gt; <span class="el_source">ClientServiceImpl.java</span></div><h1>ClientServiceImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.service.impl;
+
+import com.azurian.library.domain.Client;
+import com.azurian.library.dto.request.ClientRequest;
+import com.azurian.library.dto.response.ClientResponse;
+import com.azurian.library.exception.BusinessException;
+import com.azurian.library.exception.ResourceNotFoundException;
+import com.azurian.library.mapper.ClientMapper;
+import com.azurian.library.repository.ClientRepository;
+import com.azurian.library.service.ClientService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L20">@Slf4j</span>
+@Transactional(readOnly = true)
+public class ClientServiceImpl implements ClientService {
+
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
+
+    @Override
+    public Page&lt;ClientResponse&gt; findAll(String search, Pageable pageable) {
+<span class="fc" id="L29">        log.debug(&quot;Finding all clients with search='{}'&quot;, search);</span>
+<span class="pc bpc" id="L30" title="1 of 4 branches missed.">        Page&lt;Client&gt; page = (search != null &amp;&amp; !search.isBlank())</span>
+<span class="fc" id="L31">                ? clientRepository.findBySearch(search, pageable)</span>
+<span class="fc" id="L32">                : clientRepository.findAll(pageable);</span>
+<span class="fc" id="L33">        return page.map(clientMapper::toResponse);</span>
+    }
+
+    @Override
+    public ClientResponse findById(Long id) {
+<span class="fc" id="L38">        log.debug(&quot;Finding client by id={}&quot;, id);</span>
+<span class="fc" id="L39">        return clientMapper.toResponse(findClientOrThrow(id));</span>
+    }
+
+    @Override
+    @Transactional
+    public ClientResponse create(ClientRequest request) {
+<span class="fc" id="L45">        log.info(&quot;Creating client with email='{}'&quot;, request.getEmail());</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (clientRepository.existsByEmail(request.getEmail())) {</span>
+<span class="fc" id="L47">            throw new BusinessException(&quot;Client with email '&quot; + request.getEmail() + &quot;' already exists&quot;);</span>
+        }
+<span class="fc" id="L49">        Client saved = clientRepository.save(clientMapper.toEntity(request));</span>
+<span class="fc" id="L50">        log.info(&quot;Client created with id={}&quot;, saved.getId());</span>
+<span class="fc" id="L51">        return clientMapper.toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public ClientResponse update(Long id, ClientRequest request) {
+<span class="fc" id="L57">        log.info(&quot;Updating client id={}&quot;, id);</span>
+<span class="fc" id="L58">        Client client = findClientOrThrow(id);</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (!client.getEmail().equalsIgnoreCase(request.getEmail())</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                &amp;&amp; clientRepository.existsByEmail(request.getEmail())) {</span>
+<span class="nc" id="L61">            throw new BusinessException(&quot;Client with email '&quot; + request.getEmail() + &quot;' already exists&quot;);</span>
+        }
+<span class="fc" id="L63">        clientMapper.updateEntity(request, client);</span>
+<span class="fc" id="L64">        return clientMapper.toResponse(clientRepository.save(client));</span>
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+<span class="fc" id="L70">        log.info(&quot;Deleting client id={}&quot;, id);</span>
+<span class="fc" id="L71">        Client client = findClientOrThrow(id);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (!client.getLoans().isEmpty()) {</span>
+<span class="fc" id="L73">            throw new BusinessException(&quot;Cannot delete client with associated loans&quot;);</span>
+        }
+<span class="fc" id="L75">        clientRepository.delete(client);</span>
+<span class="fc" id="L76">    }</span>
+
+    private Client findClientOrThrow(Long id) {
+<span class="fc" id="L79">        return clientRepository.findById(id)</span>
+<span class="fc" id="L80">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Client&quot;, id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

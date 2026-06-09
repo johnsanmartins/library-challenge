@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.azurian.library.mapper</a> &gt; <span class="el_source">BookMapperImpl.java</span></div><h1>BookMapperImpl.java</h1><pre class="source lang-java linenums">package com.azurian.library.mapper;
+
+import com.azurian.library.domain.Author;
+import com.azurian.library.domain.Book;
+import com.azurian.library.dto.request.BookRequest;
+import com.azurian.library.dto.response.AuthorResponse;
+import com.azurian.library.dto.response.BookResponse;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-06-09T18:53:08-0400&quot;,
+    comments = &quot;version: 1.6.2, compiler: javac, environment: Java 21.0.8 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L20">public class BookMapperImpl implements BookMapper {</span>
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private AuthorMapper authorMapper;
+
+    @Override
+    public BookResponse toResponse(Book book) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if ( book == null ) {</span>
+<span class="nc" id="L30">            return null;</span>
+        }
+
+<span class="nc" id="L33">        BookResponse bookResponse = new BookResponse();</span>
+
+<span class="nc" id="L35">        bookResponse.setId( book.getId() );</span>
+<span class="nc" id="L36">        bookResponse.setTitle( book.getTitle() );</span>
+<span class="nc" id="L37">        bookResponse.setIsbn( book.getIsbn() );</span>
+<span class="nc" id="L38">        bookResponse.setPublishedYear( book.getPublishedYear() );</span>
+<span class="nc" id="L39">        bookResponse.setSynopsis( book.getSynopsis() );</span>
+<span class="nc" id="L40">        bookResponse.setAvailableCopies( book.getAvailableCopies() );</span>
+<span class="nc" id="L41">        bookResponse.setCategory( categoryMapper.toResponse( book.getCategory() ) );</span>
+<span class="nc" id="L42">        bookResponse.setAuthors( authorSetToAuthorResponseSet( book.getAuthors() ) );</span>
+
+<span class="nc" id="L44">        return bookResponse;</span>
+    }
+
+    @Override
+    public Book toEntity(BookRequest request) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L50">            return null;</span>
+        }
+
+<span class="nc" id="L53">        Book.BookBuilder book = Book.builder();</span>
+
+<span class="nc" id="L55">        book.title( request.getTitle() );</span>
+<span class="nc" id="L56">        book.isbn( request.getIsbn() );</span>
+<span class="nc" id="L57">        book.publishedYear( request.getPublishedYear() );</span>
+<span class="nc" id="L58">        book.synopsis( request.getSynopsis() );</span>
+<span class="nc" id="L59">        book.availableCopies( request.getAvailableCopies() );</span>
+
+<span class="nc" id="L61">        return book.build();</span>
+    }
+
+    @Override
+    public void updateEntity(BookRequest request, Book book) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L67">            return;</span>
+        }
+
+<span class="nc" id="L70">        book.setTitle( request.getTitle() );</span>
+<span class="nc" id="L71">        book.setIsbn( request.getIsbn() );</span>
+<span class="nc" id="L72">        book.setPublishedYear( request.getPublishedYear() );</span>
+<span class="nc" id="L73">        book.setSynopsis( request.getSynopsis() );</span>
+<span class="nc" id="L74">        book.setAvailableCopies( request.getAvailableCopies() );</span>
+<span class="nc" id="L75">    }</span>
+
+    protected Set&lt;AuthorResponse&gt; authorSetToAuthorResponseSet(Set&lt;Author&gt; set) {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if ( set == null ) {</span>
+<span class="nc" id="L79">            return null;</span>
+        }
+
+<span class="nc" id="L82">        Set&lt;AuthorResponse&gt; set1 = LinkedHashSet.newLinkedHashSet( set.size() );</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        for ( Author author : set ) {</span>
+<span class="nc" id="L84">            set1.add( authorMapper.toResponse( author ) );</span>
+<span class="nc" id="L85">        }</span>
+
+<span class="nc" id="L87">        return set1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

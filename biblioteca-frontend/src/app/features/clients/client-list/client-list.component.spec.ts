@@ -92,7 +92,7 @@ describe('ClientListComponent', () => {
     dialogMock.open.mockReturnValue({ afterClosed: () => of(true) } as any);
     clientServiceMock.delete.mockReturnValue(throwError(() => ({ error: { message: 'Cannot delete' } })));
     component.openDeleteDialog(mockClient);
-    expect(snackBarMock.open).toHaveBeenCalledWith('Cannot delete', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Cannot delete', 'Cerrar', expect.any(Object));
   });
 
   it('should update page params on page change', () => {
@@ -110,7 +110,7 @@ describe('ClientListComponent', () => {
   it('should show error when load fails', () => {
     clientServiceMock.getAll.mockReturnValue(throwError(() => new Error()));
     component.loadClients();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Failed to load clients', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Error al cargar los clientes', 'Cerrar', expect.any(Object));
   });
 
   it('should debounce search input', fakeAsync(() => {

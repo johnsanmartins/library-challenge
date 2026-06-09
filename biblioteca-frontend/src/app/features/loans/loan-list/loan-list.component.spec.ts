@@ -68,7 +68,7 @@ describe('LoanListComponent', () => {
     dialogMock.open.mockReturnValue({ afterClosed: () => of(true) } as any);
     component.openReturnDialog(mockLoan);
     expect(loanServiceMock.returnBook).toHaveBeenCalledWith(1, expect.objectContaining({ status: 'RETURNED' }));
-    expect(snackBarMock.open).toHaveBeenCalledWith('Book returned', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Libro devuelto', 'Cerrar', expect.any(Object));
   });
 
   it('should not return when cancelled', () => {
@@ -101,7 +101,7 @@ describe('LoanListComponent', () => {
   it('should show error when load fails', () => {
     loanServiceMock.getAll.mockReturnValue(throwError(() => new Error()));
     component.loadLoans();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Failed to load loans', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Error al cargar los préstamos', 'Cerrar', expect.any(Object));
   });
 
   it('should show error when return fails', () => {
@@ -110,6 +110,6 @@ describe('LoanListComponent', () => {
       throwError(() => ({ error: { message: 'Already returned' } }))
     );
     component.openReturnDialog(mockLoan);
-    expect(snackBarMock.open).toHaveBeenCalledWith('Already returned', 'Close', expect.any(Object));
+    expect(snackBarMock.open).toHaveBeenCalledWith('Already returned', 'Cerrar', expect.any(Object));
   });
 });
